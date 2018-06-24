@@ -35,7 +35,6 @@ Note:
 
 - GIT, un SCM décentralisé
 - Les objets GIT
-- Mise en place de GIT
 - Les bases : Le staging et les commits
 - Les commandes de bases
 - Les remotes
@@ -46,14 +45,14 @@ Note:
 
 - Les branches
 - Jouer avec les commits
-- Les alias
-- Les hooks
-- GitHub et les Pull Request
+- Les commandes avancées
+- La configuration
 - Les IHM et outils
 
 Note:
 * Parler des pauses (dejeuner ensemble ?)
 * Demander si il y a des contraintes d'horaires
+* Méthode Une question => Une démo en live
 
 
 
@@ -64,6 +63,7 @@ Note:
 Note:
 * Auto-évaluation Git
 * Commiter open-source ?
+* __On fait le questionnaire !__
 
 ====
 
@@ -82,6 +82,7 @@ Note:
 * Mercurial
 
 Note:
+* Backup, gestion de versions, édition à plusieurs
 * Git s'impose
 
 
@@ -107,7 +108,7 @@ Note:
 Note:
 * Techniquement, pas besoin de serveur, mais en vrai on en a un
 * Presque tout se passe donc en local
-* Après un clone, tout l'historique du projet est en local et ne nécessite plus aucun accès réseau pour le manipuler
+* Après un clone, tout l'historique du projet est en local et ne nécessite plus aucun accès réseau pour le manipuler (cool pour backup)
 
 
 ==== 
@@ -180,7 +181,7 @@ Nom donné à un commit + métadonnées
 ![image](images/snapshots-vs-delta.png)
 
 Note:
-Des Snapshots, pas des diffs...
+* Des Snapshots, pas des diffs...
 
 
 ====
@@ -258,42 +259,35 @@ Note:
 
 ## Status
 
-<pre><code class="bash">$ git status
-</code></pre>
+<pre><code class="bash">$ git status</code></pre>
 
 ## Add/Rm
 
 <pre><code class="bash">$ git add .
-$ git add *.java
-</code></pre>
+$ git add *.java</code></pre>
 
 ## Diff
 
 <pre><code class="bash">$ git diff 
-$ git diff 15a2f5d6 1299bb45a
-</code></pre>
+$ git diff 15a2f5d6 1299bb45a</code></pre>
 
 
 
 ## Commit
 
 <pre><code class="bash">$ git commit -m "Mon super message" --author="Superman" 
-$ git commit -A
-</code></pre>
+$ git commit -A</code></pre>
 
-## Checkout --
-<pre><code class="bash">$ git checkout -- toto.json
-</code></pre>
+## Checkout
+<pre><code class="bash">$ git checkout -- toto.json</code></pre>
+Permet d'annuler les modification du fichier en cours dans le workspace
 
-##  Reset
+<pre><code class="bash">$ git checkout 15be36c66a</code></pre>
+Permet de se placer sur un commit particulier
 
-<pre><code class="bash">$ git reset HEAD~3
-$ git reset --hard X
-</code></pre>
-
-Note: 
-* Tout ramener (répertoire de travail inclu) à l'état du commit X
-* reset soft, hard, mixed 
+Note:
+* checkout part 1 car il y a d'autres utilités à cette commande
+* detached HEAD quand on va sur un commit particulier mais pas le dernier, les commits fait ne seraient dans aucune branche
 
 
 
@@ -333,12 +327,64 @@ $ git log --graph
 --abbrev-commit -12
 </code></pre>
 
+![image](images/gitlog.png)<!-- .element: class="fragment" -->
+
+Note:
+* git show : Shows one or more objects (blobs, trees, tags and commits).
+
+
+
+# Revision Selection
+
+* SHA-1 ou Short SHA-1
+* Nom de branche, Nom de tag
+* RefLog ShortName <pre><code class="bash">$ git show HEAD@{5}</code></pre>
+* Ancestry Reference <pre><code class="bash">$ git show HEAD^
+$ git show HEAD~3</code></pre>
+
+Note:
+* HEAD^ == the parent of HEAD
+* HEAD^2 == the second parent of HEAD (exemple : merge plusieurs parents)
+* HEAD~ == the parent of HEAD
+* HEAD~2 == the parent of the parent of HEAD (HEAD^^)
+* HEAD~3^2     O_o
+
+
+
+## Revision Selection
+
+![image](images/revision-selection.png)
+
+Double and triple dots
+<pre><code class="bash">$ git log master..experiment
+D
+C
+$ git log master...experiment
+F
+E
+D
+C</code></pre>
+
+Note:
+* $ git log experiment..master => F E
+
+
+
+##  Reset
+
+<pre><code class="bash">$ git reset HEAD~3
+$ git reset --hard X
+</code></pre>
+
 ## Grep
 
 <pre><code class="bash">$ git log --grep=Defect</code></pre>
 
 <pre><code class="bash">$ git grep 'time_t' -- '*.java'</code></pre>
 
+Note: 
+* Tout ramener (répertoire de travail inclu) à l'état du commit X
+* reset soft, hard, mixed 
 
 ====
 
@@ -379,7 +425,8 @@ $ git remote show origin
 
 ### Créer une branche
 
-<pre><code class="bash">$ git branch testing</code></pre>
+<pre><code class="bash">$ git branch testing
+$ git checkout -b [branchname] [tagname]</code></pre>
 
 ![image](images/head-to-master.png)
 
@@ -420,6 +467,29 @@ $ git commit -a -m 'made other changes'
 
 
 
+## Suppression de branches
+
+<pre><code class="bash">
+$ git branch -d hotfix
+Deleted branch hotfix (3a0874c).
+$ git push origin hotfix
+
+$ git push origin --delete blabla
+</code></pre>
+
+## Voir les branches
+<pre><code class="bash">$ git branch -a
+$ git branch --merged
+$ git branch --no-merged
+</code></pre>
+
+Note:
+* -d vs -D : -D delete force quand non mergée
+* Différence entre branch local et remote
+* Il peut y avoir plusieurs remotes avec des branches qui ont le même nom mais des états différents
+
+
+
 ### Merge d'une branche dans une autre
 
 <pre><code class="bash">$ git checkout master
@@ -442,6 +512,7 @@ index.html |    1 +
 
 Note:
 * Il peut y avoir des conflits à gérer
+* git merge --squash bugfix : squash all bugfix commits in one before merge
 
 
 
@@ -461,38 +532,7 @@ Si possible, Git cherche à ne pas créer de _commit de merge_ même si on lui d
 
 
 
-
-# Gestion branches
-
-### Création
-
-<pre><code class="bash">$ git checkout -b [branchname] [tagname]
-</code></pre>
-
-### Suppression
-
-<pre><code class="bash">
-$ git branch -d hotfix
-Deleted branch hotfix (3a0874c).
-$ git push origin hotfix
-
-$ git push origin --delete blabla
-</code></pre>
-
-Note: 
-* -d vs -D : -D delete force quand non mergée
-
-
-
-### Voir les branches
-<pre><code class="bash">$ git branch -a
-$ git branch --merged
-$ git branch --no-merged
-</code></pre>
-
-
-
-## Le fetch
+### Le fetch
 
 ![image](images/remote-branches-5.png)
 
@@ -500,17 +540,17 @@ $ git branch --no-merged
 
 ## Le fecth
 
-<pre><code class="bash">$ git fetch <remote></code></pre>
-Fetch all of the branches from the repository. This also downloads all of the required commits and files from the other repository.
+<pre><code class="bash">$ git fetch remote</code></pre>
+Fetch toutes les branches du repo
 
-<pre><code class="bash">$ git fetch <remote> <branch></code></pre>
-Same as the above command, but only fetch the specified branch.
+<pre><code class="bash">$ git fetch remote branch</code></pre>
+Fetch seulement la branche choisie
 
 <pre><code class="bash">$ git fetch --all</code></pre>
-A power move which fetches all registered remotes and their branches:
+Fetch toutes les branches de tous les remotes
 
 <pre><code class="bash">$ git fetch --dry-run</code></pre>
-The --dry-run option will perform a demo run of the command. I will output examples of actions it will take during the fetch but not apply them.
+Execution en mode démo
 
 
 
@@ -542,13 +582,18 @@ $ git merge experiment
 
 
 
-## Pull rebase
+## Pull
 
 Pour récupérérer les données du serveur distant
 
-<pre><code class="bash">$ git pull --rebase</code></pre>
+> git pull = git fetch + git merge
 
-![image](images/magic.gif)
+<pre><code class="bash">$ git pull --rebase</code></pre><!-- .element: class="fragment" -->
+
+![image](images/magic.gif)<!-- .element: class="fragment" -->
+
+Note:
+* Animation rebase + gif
 
 
 
@@ -615,6 +660,10 @@ $ git add -i
 
 ![image](images/separate.gif)
 
+Note :
+* Patch que 'patch'
+* Interactive mieux :) menu contextuel avec plein de choix (reverte, status, patch, update, ...)
+
 
 
 ## Le rebase interactif
@@ -650,13 +699,14 @@ __<i class="fas fa-exclamation-circle"></i> Pas de Rebase sur ce qui a été pou
 
 ### filter-branch
 
-Vous vous rendez compte au bout d’un certains nombre de commits que vous avez inclu un fichier sensible :
-* Ajouter ce fichier dans le .gitignore pour ne pas que l’erreur se reproduise
-* <pre><code class="bash">$ git filter-branch --tree-filter 'rm filename' HEAD</code></pre>
+Vous vous rendez compte que vous avez inclu un fichier sensible depuis plusieurs commits
+
+<pre><code class="bash">$ git filter-branch --tree-filter 'rm filename' HEAD</code></pre>
 
 
 Note:
 * Fichier sensible : une clef ssh ou un fichier de conf avec le mot de passe de la bdd
+* Ajouter ce fichier dans le .gitignore pour ne pas que l’erreur se reproduise
 * Attention si déjà poussé
 
 
@@ -699,6 +749,23 @@ $ git bisect good v2.6.13-rc2    # v2.6.13-rc2 is good
 ![image](images/I-Will-Find-You-And-I-Will-Kill-You.gif)
 
 
+
+
+# Le patch
+
+<pre><code class="bash">$ git format-patch master --stdout > the-perfect-fix.patch</code></pre>
+Crée un patch entre master et le commit actuel
+
+<pre><code class="bash">$ git apply the-perfect-fix.patch</code></pre>
+Applique le patch dans le workspace
+
+<pre><code class="bash">$ git am the-perfect-fix.patch</code></pre>
+Applique le patch en tant que commit
+
+
+Note: 
+* Le patch peut être envoyé par mail par exemple
+
 ==== 
 
 # Configuration
@@ -712,6 +779,8 @@ $ git config --global alias.st status
 $ git config --global alias.unstage 'reset HEAD --'
 </code></pre>
 
+Note:
+* git pull --rebase = git config --global branch.autosetuprebase always
 
 ## Config
 
@@ -732,9 +801,16 @@ $ git config --global merge.tool vimdiff
 
 
 
-## Hooks
+# Connexion
 
+* SSH 
 
+ou 
+
+* HTTP
+
+Note:
+* Gestion des clés SSH
 
 
 ====
@@ -742,8 +818,7 @@ $ git config --global merge.tool vimdiff
 ## Les IHM
 
 * Ligne de commande (gitk, git gui)
-* SourceTree
-* SmartGit
+* SourceTree, SmartGit
 * Plugin Eclipse
 * Intégration native VS Code, IntelliJ, Atom, SublimeText
 
@@ -763,16 +838,40 @@ $ git config --global merge.tool vimdiff
 Note:
 * Parler du rachat par microsoft de github
 * gh-pages de github
+* Fork and pull request
+* Bitbucket privé et gratuit
+
+
+
+## GitFlow (et Oli)
+
+![image](images/gitflow.png)
+
+Note:
+* git-flow est un ensemble d'extensions git permettant des opérations de haut niveau sur un dépôt pour appliquer le modèle de branches de Vincent Driessen
+* Gestion des branches "Master, Develop, HotFix, Feature, ...", des tags, ...
+* Complexe, Historique difficile à suivre, Régressions suite aux merges automatiques
+* On peut faire un Git-Flow Like...
+
+
 
 ## Les outils
 
-* Gitflow
 * Gerrit
 * Git-SVN
+* Jenkins
+
+
+Note:
+* IC, hook plutôt que pull réguliers pour déclenchement
 
 ====
 
 # Conclusion
+
+Note:
+* Il y a encore plein de choses à découvrir (les sous modules, ...)
+* __On refait le questionnaire !__
 
 
 
@@ -795,28 +894,9 @@ Note:
 
 * **Retour à SVN difficile**
 
+Note:
+* Les gens ont parfois peur de git
 
 
 
 ![image](images/end.gif)
-
-
-
-git show
-patch
-Revision Selection
-Interactive Staging
-ssh
-submodules
-feature branch / git flow
-pull request / fork
-git pull = git fetch + git merge
-
-local branch vs remote branch
-'detached HEAD'
-git pull --rebase = git config --global branch.autosetuprebase always
-
-
-
-
-https://www.atlassian.com/git/tutorials/syncing/git-fetch
