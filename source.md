@@ -241,6 +241,7 @@ Note:
 * Parler du fichier .gitignore
 * Parler du git commit sans le -m pour ouvrir l'éditeur
 * Parler du SHA créé par le commit
+* Aller voir dans le dossier .git
 
 
 ====
@@ -382,6 +383,9 @@ $ git remote show origin
 
 ![image](images/head-to-master.png)
 
+Note:
+* Aller voir dans le dossier .git
+
 
 
 ### Switcher sur une branche
@@ -491,6 +495,22 @@ $ git branch --no-merged
 ## Le fetch
 
 ![image](images/remote-branches-5.png)
+
+
+
+## Le fecth
+
+<pre><code class="bash">$ git fetch <remote></code></pre>
+Fetch all of the branches from the repository. This also downloads all of the required commits and files from the other repository.
+
+<pre><code class="bash">$ git fetch <remote> <branch></code></pre>
+Same as the above command, but only fetch the specified branch.
+
+<pre><code class="bash">$ git fetch --all</code></pre>
+A power move which fetches all registered remotes and their branches:
+
+<pre><code class="bash">$ git fetch --dry-run</code></pre>
+The --dry-run option will perform a demo run of the command. I will output examples of actions it will take during the fetch but not apply them.
 
 
 
@@ -791,7 +811,7 @@ submodules
 feature branch / git flow
 pull request / fork
 git pull = git fetch + git merge
-et si on allait voir dans le .git ?
+
 local branch vs remote branch
 'detached HEAD'
 git pull --rebase = git config --global branch.autosetuprebase always
@@ -800,14 +820,3 @@ git pull --rebase = git config --global branch.autosetuprebase always
 
 
 https://www.atlassian.com/git/tutorials/syncing/git-fetch
-git fetch <remote>
-Fetch all of the branches from the repository. This also downloads all of the required commits and files from the other repository.
-
-git fetch <remote> <branch>
-Same as the above command, but only fetch the specified branch.
-
-git fetch --all
-A power move which fetches all registered remotes and their branches:
-
-git fetch --dry-run
-The --dry-run option will perform a demo run of the command. I will output examples of actions it will take during the fetch but not apply them.
