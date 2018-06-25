@@ -804,7 +804,7 @@ Note:
 
 ## Les hooks
 
-* Coté client ou coté serveur
+* Côté client ou coté serveur
 * Dans le dossier .git/hooks
 * Hooks de validation (Client)
   * pre-commit
