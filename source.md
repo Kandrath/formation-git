@@ -779,8 +779,7 @@ $ git config --global alias.st status
 $ git config --global alias.unstage 'reset HEAD --'
 </code></pre>
 
-Note:
-* git pull --rebase = git config --global branch.autosetuprebase always
+
 
 ## Config
 
@@ -790,7 +789,6 @@ $ git config --global merge.tool vimdiff
 </code></pre>
 
 
-
 ## Bare Repo
 
 <pre><code class="bash">$ git init --bare</code></pre>
@@ -798,6 +796,35 @@ $ git config --global merge.tool vimdiff
 * Pas de working directory
 * Extension .git en général
 * Ne peut pas être éditer directement
+
+Note:
+* git pull --rebase = git config --global branch.autosetuprebase always
+
+
+
+## Les hooks
+
+* Coté client ou coté serveur
+* Dans le dossier .git/hooks
+* Hooks de validation (Client)
+  * pre-commit
+  * prepare-commit-msg, commit-msg
+  * post-commit
+  * pre-rebase, post-chechout, post-merge
+* Hooks serveur
+  * pre-receive, post-receive
+  * update
+
+
+Note:
+* .sample à utiliser
+* Certains avec paramètres, d'autres non mais on peut exécuter les commandes git
+* langage ruby perl, bash, ...
+* pre-commit est lancé en premier avant le message de commit peut être esquivé avec git commit --no-verify
+* post-commit pour des notifications, ...
+* pre-receive avant acceptation et peut donc refuser, post-receive pour notifications jenkins/slack par exemple
+* Si push sur plusieurs branches, update appelé 1 fois/branche alors pre-receive 1 seule fois
+* Difficulté parfois à gérer quand il y a plusieurs commits dans un push
 
 
 
